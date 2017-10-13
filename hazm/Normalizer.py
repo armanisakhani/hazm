@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import re
 from .Lemmatizer import Lemmatizer
 from .WordTokenizer import WordTokenizer
-from .utils import maketrans
+from .utils import maketrans, CHARS_TRANSLATION_DIC
 
 compile_patterns = lambda patterns: [(re.compile(pattern), repl) for pattern, repl in patterns]
 
@@ -17,9 +17,13 @@ class Normalizer(object):
 
 		translation_src, translation_dst = ' كي“”', ' کی""'
 		if persian_numbers:
-			translation_src += '0123456789%'
-			translation_dst += '۰۱۲۳۴۵۶۷۸۹٪'
+			translation_src += '0123456789%٤٥٦'
+			translation_dst += '۰۱۲۳۴۵۶۷۸۹٪۴۵۶'
+		else:
+			translation_src += '۰۱۲۳۴۵۶۷۸۹٪٤٥٦'
+			translation_dst += '0123456789%456'
 		self.translations = maketrans(translation_src, translation_dst)
+		self.translations.update(CHARS_TRANSLATION_DIC)
 
 		if self._token_based:
 			lemmatizer = Lemmatizer()
